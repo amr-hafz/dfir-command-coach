@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# Local preview logs
+*.log
+npm-debug.log*
+
+# Exported lab artifacts (student data must never be committed)
+collection-log.csv
+*.dmp
+*.mem
+*.raw
+*.E01
+*.dd
+*.img

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DFIR Command Coach — Windows Evidence Lab</title>
+  <meta name="description" content="A guided, bilingual command coach for acquiring digital evidence locally and remotely on Windows. Section 04 practical lab for CCY3003.">
+  <meta name="color-scheme" content="dark light">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d2b33'/%3E%3Cpath d='M9 8h5.6c3.6 0 5.6 1.9 5.6 4.7 0 1.9-.9 3.3-2.5 4 2.2.6 3.5 2.2 3.5 4.6 0 3.2-2.4 5.2-6.2 5.2H9zm4 3.3v3.4h1.4c1.3 0 2-.6 2-1.7s-.7-1.7-2-1.7zm0 6.4v3.9h1.8c1.5 0 2.3-.7 2.3-2s-.8-1.9-2.3-1.9z' fill='%234bc8c8'/%3E%3Ccircle cx='24' cy='22' r='3.5' fill='%23d6ad5c'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">DF</div>
+      <div class="brand-text">
+        <p class="eyebrow" id="courseLabel">Digital Forensics &amp; Incident Response</p>
+        <h1 id="siteTitle">Windows Evidence Lab</h1>
+      </div>
+    </div>
+
+    <div class="topbar-facts">
+      <span class="chip chip-code" id="courseCode">CCY3003</span>
+      <span class="chip" id="sectionChip">Section 04</span>
+      <span class="chip chip-live"><span class="pulse" aria-hidden="true"></span><span id="modeChip">Lab mode</span></span>
+    </div>
+
+    <div class="controls">
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4a6 6 0 1 0 3.9 10.6l4.3 4.3 1.4-1.4-4.3-4.3A6 6 0 0 0 10 4Zm0 2a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/></svg>
+        <input id="search" type="search" autocomplete="off" placeholder="Search steps, commands, artifacts…" aria-label="Search steps">
+        <span class="search-count" id="searchCount" aria-live="polite"></span>
+      </label>
+      <button type="button" class="ctl" id="langBtn" aria-label="Switch language">العربية</button>
+      <button type="button" class="ctl" id="themeBtn" aria-label="Toggle light and dark theme">
+        <svg class="ico-dark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9Z"/></svg>
+        <svg class="ico-light" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10Zm0-14 2 2-2 2-2-2 2-2Zm0 16 2-2 2 2-2 2-2-2ZM3 12l2-2 2 2-2 2-2-2Zm14 0 2-2 2 2-2 2-2-2Z"/></svg>
+        <span class="ctl-text" id="themeLabel">Light</span>
+      </button>
+      <button type="button" class="ctl" id="printBtn" aria-label="Print the lab worksheet">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v4H7V3Zm-2 6h14a2 2 0 0 1 2 2v6h-4v4H7v-4H3v-6a2 2 0 0 1 2-2Zm4 8v4h6v-4H9Z"/></svg>
+        <span class="ctl-text" id="printLabel">Print</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Lab navigation">
+      <div class="progress-card">
+        <div class="ring" id="progressRing" role="progressbar" aria-label="Lab progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle class="ring-track" cx="22" cy="22" r="19"></circle>
+            <circle class="ring-fill" id="ringFill" cx="22" cy="22" r="19"></circle>
+          </svg>
+          <span id="ringPct">0%</span>
+        </div>
+        <div class="progress-meta">
+          <span class="side-label" id="progressLabel">Progress</span>
+          <strong id="progressCount">0 / 0</strong>
+        </div>
+      </div>
+
+      <nav class="phase-nav" id="phaseNav" aria-label="Phases"></nav>
+
+      <div class="sidebar-actions">
+        <button type="button" class="ghost-btn" id="resetBtn">Reset progress</button>
+        <p class="kbd-hint"><kbd>/</kbd> search · <kbd>P</kbd> print</p>
+      </div>
+
+      <div class="sidebar-note">
+        <strong id="principleTitle">Collection principle</strong>
+        <p id="principleText">Start with what can disappear first. Keep every result small enough to explain.</p>
+      </div>
+    </aside>
+
+    <main id="main">
+      <section class="hero">
+        <div class="hero-main">
+          <p class="eyebrow" id="heroEyebrow">Guided practical</p>
+          <h2 id="heroTitle">Collect one clear piece of evidence at a time</h2>
+          <p class="hero-outcome" id="heroOutcome"></p>
+          <ul class="objectives" id="objectives"></ul>
+        </div>
+        <div class="hero-side">
+          <div class="plan-head">
+            <span class="side-label" id="planTitle">Session plan</span>
+            <span class="plan-total" id="planTotal">90 min</span>
+          </div>
+          <ol class="plan" id="planList"></ol>
+          <dl class="hero-facts" id="heroFacts"></dl>
+        </div>
+      </section>
+
+      <div class="notice" role="note">
+        <span class="notice-icon" aria-hidden="true">!</span>
+        <div>
+          <strong id="noticeTitle">Lab boundary:</strong>
+          <span id="noticeText">Use a VM or a dedicated test machine. The remote steps assume a second Windows VM prepared by the instructor. Never run these commands on production devices.</span>
+        </div>
+      </div>
+
+      <section class="panel" id="volatilityPanel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Decision rule</p>
+            <h3 id="volatilityTitle">Order of volatility</h3>
+          </div>
+          <p class="panel-note" id="volatilityNote">Collect from the most fragile evidence to the most persistent. Select a tier to jump to the steps that cover it.</p>
+        </div>
+        <ol class="ladder" id="ladder"></ol>
+      </section>
+
+      <div id="phaseRoot"></div>
+
+      <section class="panel" id="toolsPanel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Tool map</p>
+            <h3 id="toolsTitle">A small toolset covers the whole demonstration</h3>
+          </div>
+          <p class="panel-note" id="toolsNote">Keep one primary path and introduce optional tools only after the core workflow works.</p>
+        </div>
+        <div class="tool-grid" id="toolGrid"></div>
+      </section>
+
+      <section class="panel" id="comparePanel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Comparison</p>
+            <h3 id="compareTitle">Local and remote answer different questions</h3>
+          </div>
+          <p class="panel-note" id="compareNote">The evidence categories stay the same. The operating constraints change.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="cmp" id="compareTable">
+            <thead>
+              <tr>
+                <th scope="col" id="cmpHeadKey">Dimension</th>
+                <th scope="col" id="cmpHeadLocal">Local collection</th>
+                <th scope="col" id="cmpHeadRemote">Remote collection</th>
+              </tr>
+            </thead>
+            <tbody id="compareBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="bundlePanel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Evidence bundle</p>
+            <h3 id="bundleTitle">Build the collection log</h3>
+          </div>
+          <p class="panel-note" id="bundleNote">Every row needs a timestamp, an analyst, a host, a command, an output, a hash and a limitation. Fill the fields below, tick the steps as you finish them, then export the CSV straight into your case folder.</p>
+        </div>
+
+        <div class="identity-row">
+          <label class="field">
+            <span id="analystLabel">Analyst</span>
+            <input type="text" id="analyst" placeholder="DOMAIN\student" autocomplete="off">
+          </label>
+          <label class="field">
+            <span id="hostLabel">Local host</span>
+            <input type="text" id="host" placeholder="DFIR-WIN01" autocomplete="off">
+          </label>
+          <label class="field">
+            <span id="targetLabel">Remote target</span>
+            <input type="text" id="target" placeholder="DFIR-WIN02" autocomplete="off">
+          </label>
+        </div>
+
+        <div class="table-wrap">
+          <table class="log" id="logTable">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col" id="thTime">Timestamp (UTC)</th>
+                <th scope="col" id="thOutput">Output</th>
+                <th scope="col" id="thHash">SHA-256</th>
+                <th scope="col" id="thLimit">Limitation</th>
+              </tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+
+        <div class="bundle-actions">
+          <button type="button" class="btn btn-primary" id="exportCsv">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10.6l3.3-3.3 1.4 1.4-5.7 5.7-5.7-5.7 1.4-1.4L10 13.6V3h2ZM4 19h16v2H4v-2Z"/></svg>
+            <span id="exportLabel">Export collection-log.csv</span>
+          </button>
+          <button type="button" class="btn" id="copyCsv">Copy log</button>
+          <span class="bundle-meta" id="bundleMeta">0 rows</span>
+        </div>
+      </section>
+
+      <section class="panel" id="deliverPanel">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Deliverables</p>
+            <h3 id="deliverTitle">Submit a defensible evidence bundle</h3>
+          </div>
+          <p class="panel-note" id="deliverNote">The submission is graded on the explanation and the log, not on the size of the output folder.</p>
+        </div>
+        <ul class="deliver-list" id="deliverList"></ul>
+
+        <div class="quiz">
+          <h4 id="quizTitle">Self-check</h4>
+          <div id="quizList"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <span id="footLeft">DFIR Command Coach</span>
+    <span id="footRight">Local lab • Windows PowerShell • Beginner friendly</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <noscript>
+    <div class="notice" style="margin:20px auto;max-width:900px">
+      <span class="notice-icon">!</span>
+      <div>This coach needs JavaScript to render the lab steps. Enable JavaScript and reload the page.</div>
+    </div>
+  </noscript>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
